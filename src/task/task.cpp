@@ -7,33 +7,52 @@
  */
 
 #include "task.h"
+#include <unistd.h>
+#include <chrono>
 
 using namespace std;
 
 namespace Ergo {
-    Action *Task::running = nullptr;
 
-    Task::Task(function<void()> block) {
-    action = new Action();
+  void Task::init() {}
 
-    action->setFunction(block);
-    action->init();
+  void Task::setFunction(std::function<void()> function) {
+    handler = function;
   }
 
   void Task::resume() {
-    if(!action->complete()) {
-      running = action;
-      action->resume();
+    _enabled = true;
+
+    if(!started) {
+      _task = packaged_task<void()>([&] () {
+        handler();
+      });
+
+      _future = _task.get_future();
+      _thread = thread(move(_task));
+
+      _thread.detach();
+
+      started = true;
+    }
+
+    while(_enabled && !complete()) {}
+  }
+
+  void Task::yield() {
+    _enabled = false;
+    while(_enabled == false) {
+      this_thread::sleep_for(chrono::milliseconds(500));
     }
   }
 
   bool Task::complete() {
-    return action->complete();
-  }
-
-  void Task::yield() {
-    if(running != nullptr) {
-      running->yield();
+    if(!started) { 
+      return false; 
     }
+
+    auto status = _future.wait_for(chrono::milliseconds(0));
+
+    return status == future_status::ready;
   }
 }

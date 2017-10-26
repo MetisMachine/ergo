@@ -8,7 +8,7 @@ void increment(int value) {
   cout << "Value In: " << value << endl;
 
   value++;
-  Task::yield();
+  Operation::yield();
 
   cout << "Value out: " << value << endl;
 }
@@ -16,11 +16,11 @@ void increment(int value) {
 int main(int argc, char **argv) {
   cout << "Starting" << endl;
 
-  Task a([]() {
+  Operation a([]() {
     increment(10);
   });
 
-  Task b([]{
+  Operation b([]{
     increment(20);
   });
 
@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
   a.resume();
 
   // With a while loop
-  Task c([]{
+  Operation c([]{
     increment(30);
   });
 

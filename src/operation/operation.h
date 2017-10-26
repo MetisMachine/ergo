@@ -12,26 +12,21 @@
 #include <future>
 #include <thread>
 #include <atomic>
+#include <ergo.h>
 
-using namespace std;
+#include "task/task.h"
 
 namespace Ergo {
-  class Action {
-  protected:
-    function<void()> handler;
-
+class Operation {
   private:
-    packaged_task<void()> _task;
-    future<void>          _future;
-    thread                _thread;
-    atomic<bool>          _enabled;
+    Task *task;
+    static Task *running;
 
-    bool started = false;
   public:
-    void setFunction(function<void()> function);
-    void init();
+    Operation(std::function<void()> block);
     void resume();
-    void yield();
     bool complete();
-  };
+
+    static void yield();
+  };  
 }

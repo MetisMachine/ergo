@@ -47,10 +47,10 @@ else()
 endif()
 
 set(LIB_SOURCES
+    src/operation/operation.cpp
+    src/operation/operation.h
     src/task/task.cpp
     src/task/task.h
-    src/action/action.cpp
-    src/action/action.h
     src/ergo.h
 )
 
