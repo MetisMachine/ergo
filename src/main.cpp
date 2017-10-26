@@ -7,7 +7,10 @@ using namespace Ergo;
 void increment(int value) {
   cout << "Value In: " << value << endl;
 
-  value++;
+  while(value < 1000) {
+    value++;
+  }
+
   Operation::yield();
 
   cout << "Value out: " << value << endl;

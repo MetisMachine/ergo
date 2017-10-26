@@ -41,9 +41,10 @@ namespace Ergo {
 
   void Task::yield() {
     _enabled = false;
-    while(_enabled == false) {
-      this_thread::sleep_for(chrono::milliseconds(500));
-    }
+
+    do {
+      this_thread::yield();
+    } while(_enabled == false);
   }
 
   bool Task::complete() {
